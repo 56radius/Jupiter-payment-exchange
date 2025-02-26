@@ -8,7 +8,7 @@ const Home = () => {
     const { connected } = useWallet(); 
 
     return (
-        <div className="overflow-x-hidden bg-gray-50">
+        <div className="">
             <header className="py-4 md:py-6">
                 <div className="container px-4 mx-auto sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between">
