@@ -9,7 +9,6 @@ import SendToken from "./pages/SendToken";
 //importing the solana styling
 import '@solana/wallet-adapter-react-ui/styles.css'; 
 
-import './index.css';
 
 function App() {
   return (
