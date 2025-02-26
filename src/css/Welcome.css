@@ -1,0 +1,55 @@
+/* Global Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    font-family: "Arial", sans-serif;
+  }
+  
+  /* Container */
+  .welcome-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: white;
+  }
+  
+  /* Loader Container */
+  .loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Loader Animation */
+  .loader {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(0, 0, 0, 0.2);
+    border-top: 6px solid #ffcc00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Loading Text */
+  .loading-text {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Keyframes for the Loader */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
