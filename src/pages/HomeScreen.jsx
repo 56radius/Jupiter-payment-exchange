@@ -32,13 +32,7 @@ const Home = () => {
                             )}
                         </button>
 
-                        {/* Navigation Links */}
-                        <div className="hidden lg:flex lg:space-x-10">
-                            <a href="#" className="text-gray-900 hover:text-opacity-50"> Exchange Rates </a>
-                            <a href="#" className="text-gray-900 hover:text-opacity-50"> Security </a>
-                            <a href="#" className="text-gray-900 hover:text-opacity-50"> How It Works </a>
-                        </div>
-
+                       
                         {/* Wallet Connect Button */}
                         <div className="hidden lg:flex lg:ml-auto">
                             <WalletMultiButton />
