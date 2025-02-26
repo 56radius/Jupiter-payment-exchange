@@ -8,16 +8,16 @@ const Home = () => {
     const { connected } = useWallet(); 
 
     return (
-        <div className="">
-            <header className="py-4 md:py-6">
+        <div className="bg-[#0B0F19] text-white min-h-screen">
+            <header className="py-4 md:py-6 bg-[#141A27] shadow-md">
                 <div className="container px-4 mx-auto sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between">
-                        <h2> JUP Exh </h2>
+                        <h2 className="text-lg font-semibold text-[#70E1E7]"> JUP Exh </h2>
 
                         {/* Mobile Menu Toggle */}
                         <button 
                             type="button" 
-                            className="text-gray-900 lg:hidden" 
+                            className="text-[#70E1E7] lg:hidden" 
                             onClick={() => setExpanded(!expanded)} 
                             aria-expanded={expanded}
                         >
@@ -32,7 +32,6 @@ const Home = () => {
                             )}
                         </button>
 
-                       
                         {/* Wallet Connect Button */}
                         <div className="hidden lg:flex lg:ml-auto">
                             <WalletMultiButton />
@@ -42,14 +41,14 @@ const Home = () => {
             </header>
 
             {/* Hero Section */}
-            <section className="pt-12 bg-gray-50 sm:pt-16 text-center">
+            <section className="pt-12 text-center">
                 <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <h1 className="text-lg text-gray-600">The Future of Global Payments</h1>
-                    <p className="mt-5 text-4xl font-bold text-gray-900 sm:text-5xl lg:text-6xl">
+                    <h1 className="text-lg text-[#70E1E7]">The Future of Global Payments</h1>
+                    <p className="mt-5 text-4xl font-bold sm:text-5xl lg:text-6xl">
                         Fast, Secure, and Reliable  
                         <span className="relative inline-flex">
-                            <span className="bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] blur-lg opacity-30 absolute inset-0"></span>
-                            <span className="relative"> Payment Exchange </span>
+                            <span className="bg-gradient-to-r from-[#7733FF] via-[#33D7FF] to-[#00FFA3] blur-lg opacity-40 absolute inset-0"></span>
+                            <span className="relative text-[#00FFA3]"> Payment Exchange </span>
                         </span>
                     </p>
 
@@ -57,9 +56,9 @@ const Home = () => {
                     <div className="mt-9">
                         <WalletMultiButton />
                         {connected ? (
-                            <p className="mt-4 text-green-600">Wallet Connected ✅</p>
+                            <p className="mt-4 text-[#00FFA3]">Wallet Connected ✅</p>
                         ) : (
-                            <p className="mt-4 text-red-600">Wallet Not Connected ❌</p>
+                            <p className="mt-4 text-red-400">Wallet Not Connected ❌</p>
                         )}
                     </div>
 
@@ -67,7 +66,7 @@ const Home = () => {
                     {connected && (
                         <button 
                             onClick={() => window.open("/send-token", "_blank")} 
-                            className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                            className="mt-6 px-6 py-3 bg-[#7733FF] text-white rounded-md hover:bg-[#5A27D9] transition duration-300"
                         >
                             Send Token
                         </button>
@@ -75,7 +74,7 @@ const Home = () => {
                 </div>
 
                 {/* Image Section */}
-                <div className="pb-12 bg-white flex justify-center">
+                <div className="pb-12 flex justify-center">
                     <img className="w-[900px] mt-12 scale-110" src={jupiter} alt="Jupiter Payment Exchange" />
                 </div>
             </section>
