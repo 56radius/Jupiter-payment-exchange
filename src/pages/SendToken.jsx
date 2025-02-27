@@ -5,13 +5,14 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useNavigate } from "react-router-dom";
 
-import final from "../assets/images/finally.png";
+import finalImage from "../assets/images/finally.png"; // Ensure the correct path
 
+// API Keys
 const HELIUS_API_KEY = "3b6e8462-9388-41d0-8af9-7b4c838bed44"; // Replace with your API key
 const HELIUS_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
-const connection = new Connection(HELIUS_URL, "confirmed");
-
 const COINGECKO_API = "https://api.coingecko.com/api/v3/simple/price";
+
+const connection = new Connection(HELIUS_URL, "confirmed");
 
 const SendToken = () => {
     const { connected, publicKey } = useWallet();
@@ -57,8 +58,9 @@ const SendToken = () => {
 
                 tokenList = [...tokenList, ...splTokens];
 
+                // Fetch SOL price from CoinGecko
                 const priceResponse = await axios.get(`${COINGECKO_API}?ids=solana&vs_currencies=usd`);
-                const solPrice = priceResponse.data.solana.usd;
+                const solPrice = priceResponse.data?.solana?.usd || 0;
 
                 tokenList = tokenList.map(token => {
                     if (token.mint === "SOL") {
@@ -116,16 +118,16 @@ const SendToken = () => {
 
     return (
         <div
-        className="min-h-screen flex flex-col items-center justify-center px-4"
-        style={{
-            backgroundImage: `url(${final})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            width: "100%",
-            height: "100vh",
-        }}
-    > 
+            className="min-h-screen flex flex-col items-center justify-center px-4"
+            style={{
+                backgroundImage: `url(${finalImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: "100vh",
+            }}
+        > 
             <div className="w-full max-w-lg bg-[#1E1E3F] border border-gray-700 rounded-2xl shadow-xl p-6 text-white bg-opacity-90">
                 <h2 className="text-3xl font-bold text-center text-blue-400">Send Token</h2>
 
@@ -145,6 +147,7 @@ const SendToken = () => {
                     </div>
                 )}
 
+                {/* Recipient Address Input */}
                 <input
                     type="text"
                     placeholder="Recipient Address"
@@ -153,22 +156,20 @@ const SendToken = () => {
                     className="mt-6 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
 
+                {/* Token Selection Dropdown */}
                 <select
                     value={selectedToken}
                     onChange={(e) => setSelectedToken(e.target.value)}
                     className="mt-4 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                    {tokens.length > 0 ? (
-                        tokens.map((token, index) => (
-                            <option key={index} value={token.mint}>
-                                {token.symbol} ({token.balance})
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>Loading Tokens...</option>
-                    )}
+                    {tokens.length > 0 ? tokens.map((token, index) => (
+                        <option key={index} value={token.mint}>
+                            {token.symbol} ({token.balance})
+                        </option>
+                    )) : <option disabled>Loading Tokens...</option>}
                 </select>
 
+                {/* Amount Input Field */}
                 <input
                     type="number"
                     placeholder="Enter amount"
@@ -178,6 +179,7 @@ const SendToken = () => {
                     min="0"
                 />
 
+                {/* Send Token Button */}
                 <button
                     className="mt-6 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg w-full hover:from-green-600 hover:to-blue-600 transition-all duration-200"
                     onClick={sendToken}
