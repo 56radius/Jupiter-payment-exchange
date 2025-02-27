@@ -91,7 +91,27 @@ const SendToken = () => {
             return;
         }
 
-        alert(`Sending ${amount} ${selectedToken} to: ${recipient}`);
+        try {
+            const formattedAmount = Math.floor(parseFloat(amount) * 1e9); // Convert SOL to lamports
+            const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${selectedToken}&outputMint=So11111111111111111111111111111111111111112&amount=${formattedAmount}&slippageBps=50`;
+
+            console.log("Fetching quote from:", quoteUrl);
+
+            const response = await axios.get(quoteUrl);
+
+            if (response.status !== 200) {
+                console.error("Error fetching quote:", response.data);
+                alert("Failed to get a valid quote. Check your input values.");
+                return;
+            }
+
+            console.log("Quote Response:", response.data);
+
+            alert(`Sending ${amount} ${selectedToken} to: ${recipient}`);
+        } catch (error) {
+            console.error("Error sending token:", error);
+            alert("Transaction failed. Check the console for details.");
+        }
     };
 
     return (
@@ -164,13 +184,6 @@ const SendToken = () => {
                     disabled={!recipient || !amount || parseFloat(amount) <= 0}
                 >
                     🚀 Send {amount} {selectedToken}
-                </button>
-
-                <button
-                    className="mt-4 px-6 py-3 bg-gray-700 text-white rounded-lg w-full hover:bg-gray-800 transition-all duration-200"
-                    onClick={() => navigate("/")}
-                >
-                    🔙 Back to Home
                 </button>
             </div>
         </div>
