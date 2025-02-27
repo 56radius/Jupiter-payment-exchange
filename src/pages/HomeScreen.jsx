@@ -2,14 +2,23 @@ import React, { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react"; 
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"; 
 import jupiter from "../assets/images/jupiterframework.jpg";
+import final from "../assets/images/finally.png"; // Replace with your actual background image path
 
 const Home = () => {
     const [expanded, setExpanded] = useState(false);
     const { connected } = useWallet(); 
 
     return (
-        <div className="bg-[#0B0F19] text-white min-h-screen">
-            <header className="py-4 md:py-6 bg-[#141A27] shadow-md">
+        <div 
+            className="bg-[#0B0F19] text-white min-h-screen"
+            style={{
+                backgroundImage: `url(${final})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+            }}
+        >
+            <header className="py-4 md:py-6 bg-[#141A27] bg-opacity-90 shadow-md">
                 <div className="container px-4 mx-auto sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-[#70E1E7]"> JUP Exh </h2>
