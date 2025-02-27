@@ -93,7 +93,7 @@ const SendToken = () => {
 
         try {
             const formattedAmount = Math.floor(parseFloat(amount) * 1e9); // Convert SOL to lamports
-            const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${selectedToken}&outputMint=So11111111111111111111111111111111111111112&amount=${formattedAmount}&slippageBps=50`;
+            const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${formattedAmount}&slippageBps=50`;
 
             console.log("Fetching quote from:", quoteUrl);
 
