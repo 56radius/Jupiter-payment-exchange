@@ -105,7 +105,7 @@ const SendToken = () => {
             width: "100%",
             height: "100vh",
         }}
-    >
+    > <hw>dchdcjdc</hw>
             <div className="w-full max-w-lg bg-[#1E1E3F] border border-gray-700 rounded-2xl shadow-xl p-6 text-white bg-opacity-90">
                 <h2 className="text-3xl font-bold text-center text-blue-400">Send Token</h2>
 
