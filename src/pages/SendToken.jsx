@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey, Transaction, SystemProgram } from "@solana/web3.js";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
-import finalImage from "../assets/images/finally.png"; // Ensure the correct path
+import finalImage from "../assets/images/finally.png"; // Ensure correct path
 
-// API Keys
-const HELIUS_API_KEY = "3b6e8462-9388-41d0-8af9-7b4c838bed44"; // Replace with your API key
+const HELIUS_API_KEY = "3b6e8462-9388-41d0-8af9-7b4c838bed44"; // Replace with your actual key
 const HELIUS_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const COINGECKO_API = "https://api.coingecko.com/api/v3/simple/price";
 
 const connection = new Connection(HELIUS_URL, "confirmed");
 
 const SendToken = () => {
-    const { connected, publicKey } = useWallet();
+    const { connected, publicKey, sendTransaction } = useWallet();
     const [tokens, setTokens] = useState([]);
     const [balance, setBalance] = useState("Loading...");
     const [walletValue, setWalletValue] = useState("Loading...");
     const [recipient, setRecipient] = useState("");
-    const [selectedToken, setSelectedToken] = useState("");
+    const [selectedToken, setSelectedToken] = useState(null);
     const [amount, setAmount] = useState("");
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchBalances = async () => {
@@ -42,6 +40,7 @@ const SendToken = () => {
 
                 let tokenList = [{ mint: "SOL", balance: solBalanceFormatted, symbol: "SOL", usdValue: 0 }];
 
+                // Fetch token accounts
                 const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
                     programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
                 });
@@ -74,7 +73,7 @@ const SendToken = () => {
                 setTokens(tokenList);
                 setBalance(`${solBalanceFormatted} SOL`);
                 setWalletValue(`$${totalUSD.toFixed(2)} USD`);
-                setSelectedToken(tokenList.length > 0 ? tokenList[0].mint : "");
+                setSelectedToken(tokenList[0]);
 
             } catch (error) {
                 console.error("Error fetching tokens:", error);
@@ -89,30 +88,53 @@ const SendToken = () => {
 
     const sendToken = async () => {
         if (!recipient || !selectedToken || !amount) {
-            alert("Please fill all fields before sending.");
+            Swal.fire("Error", "Please fill all fields before sending.", "error");
+            return;
+        }
+
+        if (parseFloat(amount) > parseFloat(selectedToken.balance)) {
+            Swal.fire("Error", "Insufficient balance!", "error");
             return;
         }
 
         try {
-            const formattedAmount = Math.floor(parseFloat(amount) * 1e9); // Convert SOL to lamports
-            const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${formattedAmount}&slippageBps=50`;
+            const recipientPubKey = new PublicKey(recipient);
+            const amountInLamports = Math.floor(parseFloat(amount) * 1e9); // Convert SOL to lamports
 
-            console.log("Fetching quote from:", quoteUrl);
+            const transaction = new Transaction().add(
+                SystemProgram.transfer({
+                    fromPubkey: publicKey,
+                    toPubkey: recipientPubKey,
+                    lamports: amountInLamports,
+                })
+            );
 
-            const response = await axios.get(quoteUrl);
+            const latestBlockHash = await connection.getLatestBlockhash();
+            transaction.recentBlockhash = latestBlockHash.blockhash;
+            transaction.feePayer = publicKey;
 
-            if (response.status !== 200) {
-                console.error("Error fetching quote:", response.data);
-                alert("Failed to get a valid quote. Check your input values.");
-                return;
-            }
+            // Sign and send the transaction
+            const signature = await sendTransaction(transaction, connection);
 
-            console.log("Quote Response:", response.data);
+            // Wait for confirmation
+            await connection.confirmTransaction({
+                blockhash: latestBlockHash.blockhash,
+                lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                signature,
+            });
 
-            alert(`Sending ${amount} ${selectedToken} to: ${recipient}`);
+            console.log(`Transaction successful: https://solscan.io/tx/${signature}`);
+
+            Swal.fire({
+                title: "Success 🎉",
+                text: `Transaction Confirmed! View on Solscan: https://solscan.io/tx/${signature}`,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+
         } catch (error) {
-            console.error("Error sending token:", error);
-            alert("Transaction failed. Check the console for details.");
+            console.error("Transaction failed:", error);
+            Swal.fire("Transaction Failed", "Check console for details.", "error");
         }
     };
 
@@ -127,7 +149,7 @@ const SendToken = () => {
                 width: "100%",
                 height: "100vh",
             }}
-        > 
+        >
             <div className="w-full max-w-lg bg-[#1E1E3F] border border-gray-700 rounded-2xl shadow-xl p-6 text-white bg-opacity-90">
                 <h2 className="text-3xl font-bold text-center text-blue-400">Send Token</h2>
 
@@ -147,45 +169,22 @@ const SendToken = () => {
                     </div>
                 )}
 
-                {/* Recipient Address Input */}
-                <input
-                    type="text"
-                    placeholder="Recipient Address"
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
-                    className="mt-6 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
+                <input type="text" placeholder="Recipient Address" value={recipient} onChange={(e) => setRecipient(e.target.value)}
+                    className="mt-6 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-                {/* Token Selection Dropdown */}
-                <select
-                    value={selectedToken}
-                    onChange={(e) => setSelectedToken(e.target.value)}
-                    className="mt-4 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                    {tokens.length > 0 ? tokens.map((token, index) => (
-                        <option key={index} value={token.mint}>
-                            {token.symbol} ({token.balance})
-                        </option>
-                    )) : <option disabled>Loading Tokens...</option>}
+                <select className="mt-4 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] text-white" 
+                    value={selectedToken?.mint} 
+                    onChange={(e) => setSelectedToken(tokens.find(t => t.mint === e.target.value))}>
+                    {tokens.map(token => (
+                        <option key={token.mint} value={token.mint}>{token.symbol} ({token.balance})</option>
+                    ))}
                 </select>
 
-                {/* Amount Input Field */}
-                <input
-                    type="number"
-                    placeholder="Enter amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="mt-4 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    min="0"
-                />
+                <input type="number" placeholder={`Enter ${selectedToken?.symbol || "SOL"} amount`} value={amount} onChange={(e) => setAmount(e.target.value)}
+                    className="mt-4 px-4 py-3 border border-gray-600 rounded-lg w-full bg-[#2E2E5A]" min="0" />
 
-                {/* Send Token Button */}
-                <button
-                    className="mt-6 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg w-full hover:from-green-600 hover:to-blue-600 transition-all duration-200"
-                    onClick={sendToken}
-                    disabled={!recipient || !amount || parseFloat(amount) <= 0}
-                >
-                    🚀 Send {amount} {selectedToken}
+                <button className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg w-full" onClick={sendToken}>
+                    🚀 Send {amount} {selectedToken?.symbol}
                 </button>
             </div>
         </div>
