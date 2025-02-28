@@ -6,15 +6,14 @@ import {
     PublicKey,
     Transaction,
     SystemProgram,
-    sendAndConfirmTransaction,
 } from "@solana/web3.js";
-import * as splToken from "@solana/spl-token"; // FIXED IMPORT ✅
+import * as splToken from "@solana/spl-token";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import Swal from "sweetalert2";
 
 import finalImage from "../assets/images/finally.png"; // Ensure correct path
 
-const HELIUS_API_KEY = "3b6e8462-9388-41d0-8af9-7b4c838bed44"; // Replace with actual key
+const HELIUS_API_KEY = "3b6e8462-9388-41d0-8af9-7b4c838bed44"; 
 const HELIUS_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const COINGECKO_API = "https://api.coingecko.com/api/v3/simple/price";
 
@@ -47,9 +46,9 @@ const SendToken = () => {
 
                 let tokenList = [{ mint: "SOL", balance: solBalanceFormatted, symbol: "SOL", usdValue: 0 }];
 
-                // Fetch token accounts
+                // Fetch SPL Token Accounts
                 const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
-                    programId: new PublicKey(splToken.TOKEN_PROGRAM_ID)
+                    programId: splToken.TOKEN_PROGRAM_ID
                 });
 
                 const splTokens = tokenAccounts.value.map((token) => {
