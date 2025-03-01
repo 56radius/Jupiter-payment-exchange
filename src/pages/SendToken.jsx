@@ -9,13 +9,16 @@ import {
 } from "@solana/web3.js";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import Swal from "sweetalert2";
+import { Buffer } from "buffer";  // 🔹 Fix for Phantom Mobile
 
-// Helius API Key for Solana RPC connection
+// Ensure Buffer is available in the browser
+if (typeof window !== "undefined") {
+    window.Buffer = Buffer;
+}
+
 const HELIUS_API_KEY = "3b6e8462-9388-41d0-8af9-7b4c838bed44";
 const HELIUS_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(HELIUS_URL, "confirmed");
-
-import finalImage from "../assets/images/finally.png"; 
 
 const SendToken = () => {
     const { connected, publicKey, sendTransaction } = useWallet();
@@ -29,9 +32,7 @@ const SendToken = () => {
                 setBalance("Wallet Not Connected ❌");
                 return;
             }
-
             try {
-                console.log("Fetching balance for:", publicKey.toBase58());
                 const solBalance = await connection.getBalance(publicKey);
                 setBalance(`${(solBalance / 1e9).toFixed(4)} SOL`);
             } catch (error) {
@@ -39,7 +40,6 @@ const SendToken = () => {
                 setBalance("Error fetching balance ❌");
             }
         };
-
         fetchBalance();
     }, [connected, publicKey]);
 
@@ -70,7 +70,6 @@ const SendToken = () => {
             transaction.recentBlockhash = latestBlockhash.blockhash;
             transaction.feePayer = publicKey;
 
-            // Request Phantom wallet to sign and send transaction
             const signature = await sendTransaction(transaction, connection);
             await connection.confirmTransaction(signature, "confirmed");
 
@@ -91,7 +90,7 @@ const SendToken = () => {
         <div
             className="min-h-screen flex flex-col items-center justify-center px-4 bg-cover bg-center"
             style={{
-                backgroundImage: `url(${finalImage})`,
+                backgroundImage: "url('/your-background-image.jpg')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
             }}
