@@ -166,21 +166,27 @@ const SendToken = () => {
                     </p>
                 )}
 
-                <input
-                    type="text"
-                    placeholder="Recipient Address"
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
-                    className="mt-6 px-4 py-3 w-full bg-gray-800 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-400"
-                />
+                <div className="mt-6">
+                    <label className="text-gray-300 text-sm font-medium">Recipient Address</label>
+                    <input
+                        type="text"
+                        placeholder="Enter recipient address"
+                        value={recipient}
+                        onChange={(e) => setRecipient(e.target.value)}
+                        className="mt-2 px-4 py-3 w-full bg-gray-800 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
 
-                <input
-                    type="number"
-                    placeholder="Amount in SOL"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="mt-4 px-4 py-3 w-full bg-gray-800 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-400"
-                />
+                <div className="mt-4">
+                    <label className="text-gray-300 text-sm font-medium">Amount in SOL</label>
+                    <input
+                        type="number"
+                        placeholder="Enter amount in SOL"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="mt-2 px-4 py-3 w-full bg-gray-800 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
 
                 <button
                     className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg w-full hover:bg-green-600 transition duration-300"
