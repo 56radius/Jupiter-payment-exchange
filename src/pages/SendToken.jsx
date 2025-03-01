@@ -11,6 +11,8 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import Swal from "sweetalert2";
 import { Buffer } from "buffer";  // 🔹 Fix for Phantom Mobile
 
+import finalImage from "../assets/images/finally.png"; 
+
 // Ensure Buffer is available in the browser
 if (typeof window !== "undefined") {
     window.Buffer = Buffer;
@@ -87,14 +89,15 @@ const SendToken = () => {
     };
 
     return (
-        <div
-            className="min-h-screen flex flex-col items-center justify-center px-4 bg-cover bg-center"
-            style={{
-                backgroundImage: "url('/your-background-image.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
-        >
+        <div className="min-h-screen flex flex-col items-center justify-center px-4"
+        style={{
+            backgroundImage: `url(${finalImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "100%",
+            height: "100vh",
+        }}
+    >
             <div className="w-full max-w-lg bg-[#1E1E3F] border border-gray-700 rounded-2xl shadow-xl p-6 text-white">
                 <h2 className="text-3xl font-bold text-center text-blue-400">Send SOL</h2>
 
